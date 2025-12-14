@@ -34,7 +34,7 @@ let messageText;
 let bugs = [];
 let codeBoxes = [];
 let particles;
-let timer = 30;
+let timer = BASE_TIME;
 let timerEvent;
 let gameActive = true;
 
@@ -44,6 +44,11 @@ const bugTypes = [
     { name: 'major', color: 0xFFB347, points: 25, speed: 150, emoji: '🐞' },
     { name: 'critical', color: 0xFF6B6B, points: 50, speed: 200, emoji: '🦗' }
 ];
+
+// Game configuration constants
+const MAX_BUGS = 8;           // Maximum bugs on screen at once
+const BASE_TIME = 30;         // Starting time in seconds
+const TIME_INCREMENT = 5;     // Additional time per level
 
 // Initialize the game
 window.onload = function() {
@@ -64,6 +69,13 @@ function create() {
     // Create UI
     createUI(this);
     
+    // Set up particle graphics first
+    const particleGraphics = this.add.graphics();
+    particleGraphics.fillStyle(0xFFFFFF, 1);
+    particleGraphics.fillCircle(5, 5, 5);
+    particleGraphics.generateTexture('particle', 10, 10);
+    particleGraphics.destroy();
+    
     // Create particle emitter for bug squashing effects
     particles = this.add.particles(0, 0, 'particle', {
         speed: { min: -100, max: 100 },
@@ -73,11 +85,6 @@ function create() {
         gravityY: 0,
         emitting: false
     });
-    
-    // Set up particle graphics
-    const particleGraphics = this.add.graphics();
-    particleGraphics.generateTexture('particle', 10, 10);
-    particleGraphics.destroy();
     
     // Start spawning bugs
     this.time.addEvent({
@@ -192,7 +199,7 @@ function createUI(scene) {
 }
 
 function spawnBug() {
-    if (!gameActive || bugs.length >= 8) return;
+    if (!gameActive || bugs.length >= MAX_BUGS) return;
     
     // Select random bug type (weighted towards minor bugs)
     const rand = Math.random();
@@ -368,7 +375,7 @@ function nextLevel() {
         level++;
         bugsToFind = 5 + (level - 1) * 2; // Increase bugs needed
         bugsCaught = 0;
-        timer = 30 + (level - 1) * 5; // More time for harder levels
+        timer = BASE_TIME + (level - 1) * TIME_INCREMENT; // More time for harder levels
         gameActive = true;
         
         levelText.setText('Level: ' + level);
@@ -424,7 +431,7 @@ function restartGame() {
     level = 1;
     bugsToFind = 5;
     bugsCaught = 0;
-    timer = 30;
+    timer = BASE_TIME;
     gameActive = true;
     bugs = [];
     
