@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test Plan Builder - Learn Software Testing</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+</head>
+<body>
+    <a href="http://localhost:7890" class="back-home-btn" title="Back to Main Page">🏠 Home</a>
+    <button id="music-toggle" class="music-toggle" title="Toggle Music">🔊</button>
+    <div id="game-wrapper">
+        <!-- Header -->
+        <header class="game-header">
+            <div class="header-content">
+                <h1>🧪 Test Plan Builder</h1>
+                <p class="subtitle">Master Software Testing Through Interactive Gameplay</p>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="score-display">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value" id="level-display">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Coverage</span>
+                    <span class="stat-value" id="coverage-display">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Bugs Found</span>
+                    <span class="stat-value" id="bugs-display">0/0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <div class="game-container">
+            <!-- Test Steps Panel (Left) -->
+            <aside class="test-steps-panel">
+                <h2>📋 Available Test Steps</h2>
+                <div class="test-category">
+                    <h3>🔍 Input Validation</h3>
+                    <div class="test-cards" id="input-tests">
+                        <div class="test-card" draggable="true" data-test="empty-fields">
+                            <span class="card-icon">📝</span>
+                            <span class="card-title">Check Empty Fields</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="special-chars">
+                            <span class="card-icon">🔣</span>
+                            <span class="card-title">Special Characters</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="max-length">
+                            <span class="card-icon">📏</span>
+                            <span class="card-title">Max Length Check</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-category">
+                    <h3>🔒 Security Testing</h3>
+                    <div class="test-cards" id="security-tests">
+                        <div class="test-card" draggable="true" data-test="sql-injection">
+                            <span class="card-icon">💉</span>
+                            <span class="card-title">SQL Injection</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="xss">
+                            <span class="card-icon">🔐</span>
+                            <span class="card-title">XSS Protection</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="auth">
+                            <span class="card-icon">🔑</span>
+                            <span class="card-title">Authentication</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-category">
+                    <h3>🎨 UI Testing</h3>
+                    <div class="test-cards" id="ui-tests">
+                        <div class="test-card" draggable="true" data-test="responsive">
+                            <span class="card-icon">📱</span>
+                            <span class="card-title">Responsive Design</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="accessibility">
+                            <span class="card-icon">♿</span>
+                            <span class="card-title">Accessibility</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="layout">
+                            <span class="card-icon">🖼️</span>
+                            <span class="card-title">Layout Check</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-category">
+                    <h3>⚡ Performance</h3>
+                    <div class="test-cards" id="performance-tests">
+                        <div class="test-card" draggable="true" data-test="load-time">
+                            <span class="card-icon">⏱️</span>
+                            <span class="card-title">Load Time</span>
+                        </div>
+                        <div class="test-card" draggable="true" data-test="memory">
+                            <span class="card-icon">💾</span>
+                            <span class="card-title">Memory Usage</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Test Plan Builder (Center) -->
+            <main class="test-plan-area">
+                <div class="plan-header">
+                    <h2>🎯 Your Test Plan</h2>
+                    <div class="plan-actions">
+                        <button id="clear-btn" class="btn btn-secondary">🗑️ Clear</button>
+                        <button id="run-tests-btn" class="btn btn-primary">▶️ Run Tests</button>
+                    </div>
+                </div>
+                <div id="drop-zone" class="drop-zone">
+                    <p class="empty-state">Drag test steps here to build your test plan</p>
+                </div>
+                <div class="coverage-bar">
+                    <div class="coverage-label">Test Coverage</div>
+                    <div class="coverage-track">
+                        <div id="coverage-fill" class="coverage-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="coverage-percentage" id="coverage-text">0%</div>
+                </div>
+            </main>
+
+            <!-- Application Under Test (Right) -->
+            <aside class="app-panel">
+                <h2>🖥️ Application Under Test</h2>
+                <div id="test-app" class="test-application">
+                    <div class="app-header">
+                        <h3 id="app-title">Login Form</h3>
+                        <span class="level-badge" id="app-level">Level 1</span>
+                    </div>
+                    <div class="app-content" id="app-content">
+                        <!-- Dynamic content loaded by game -->
+                        <div class="form-demo">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" placeholder="Enter username">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" placeholder="Enter password">
+                            </div>
+                            <button class="btn-submit">Login</button>
+                        </div>
+                    </div>
+                    <div id="bugs-container" class="bugs-container">
+                        <!-- Bugs will appear here when tests run -->
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Tutorial Overlay -->
+        <div id="tutorial-overlay" class="tutorial-overlay">
+            <div class="tutorial-content">
+                <h2>🎓 Welcome to Test Plan Builder!</h2>
+                <div class="tutorial-steps">
+                    <div class="tutorial-step">
+                        <span class="step-number">1</span>
+                        <p>Drag test steps from the left panel</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <span class="step-number">2</span>
+                        <p>Drop them in the test plan area</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <span class="step-number">3</span>
+                        <p>Click "Run Tests" to find bugs</p>
+                    </div>
+                    <div class="tutorial-step">
+                        <span class="step-number">4</span>
+                        <p>Click bugs to fix them and earn points!</p>
+                    </div>
+                </div>
+                <button id="start-game-btn" class="btn btn-large btn-primary">🚀 Start Playing</button>
+            </div>
+        </div>
+
+        <!-- Results Modal -->
+        <div id="results-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="results-title">🎉 Level Complete!</h2>
+                <div class="results-stats">
+                    <div class="result-item">
+                        <span class="result-label">Bugs Found</span>
+                        <span class="result-value" id="result-bugs">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Coverage</span>
+                        <span class="result-value" id="result-coverage">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Points Earned</span>
+                        <span class="result-value" id="result-points">0</span>
+                    </div>
+                    <div class="result-item bonus">
+                        <span class="result-label">Bonus</span>
+                        <span class="result-value" id="result-bonus">0</span>
+                    </div>
+                </div>
+                <button id="next-level-btn" class="btn btn-large btn-primary">Next Level →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Particle Canvas (for effects) -->
+    <canvas id="particle-canvas"></canvas>
+
+    <script src="game.js"></script>
+    <script>
+        // Test Plan Builder Arcade Music
+        class BuilderMusic {
+            constructor() {
+                this.audioContext = null;
+                this.isPlaying = false;
+                this.currentNote = 0;
+                this.gainNode = null;
+                
+                // Calm, strategic music
+                this.melody = [
+                    { freq: 261.63, duration: 0.25 }, // C4
+                    { freq: 329.63, duration: 0.25 }, // E4
+                    { freq: 392.00, duration: 0.25 }, // G4
+                    { freq: 523.25, duration: 0.25 }, // C5
+                    { freq: 392.00, duration: 0.25 }, // G4
+                    { freq: 329.63, duration: 0.25 }, // E4
+                    { freq: 293.66, duration: 0.5 },  // D4
+                    { freq: 329.63, duration: 0.25 }, // E4
+                    { freq: 392.00, duration: 0.25 }, // G4
+                    { freq: 493.88, duration: 0.25 }, // B4
+                    { freq: 392.00, duration: 0.25 }, // G4
+                    { freq: 329.63, duration: 0.5 }   // E4
+                ];
+            }
+            
+            init() {
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.gainNode = this.audioContext.createGain();
+                    this.gainNode.gain.value = 0.12;
+                    this.gainNode.connect(this.audioContext.destination);
+                }
+            }
+            
+            playNote(frequency, duration) {
+                if (!this.audioContext) return;
+                
+                const osc = this.audioContext.createOscillator();
+                const noteGain = this.audioContext.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.value = frequency;
+                
+                noteGain.gain.setValueAtTime(0.12, this.audioContext.currentTime);
+                noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                
+                osc.connect(noteGain);
+                noteGain.connect(this.gainNode);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + duration);
+            }
+            
+            playLoop() {
+                if (!this.isPlaying) return;
+                
+                const note = this.melody[this.currentNote];
+                this.playNote(note.freq, note.duration);
+                
+                this.currentNote = (this.currentNote + 1) % this.melody.length;
+                
+                setTimeout(() => this.playLoop(), note.duration * 1000);
+            }
+            
+            start() {
+                this.init();
+                if (this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+                this.isPlaying = true;
+                this.playLoop();
+            }
+            
+            stop() {
+                this.isPlaying = false;
+            }
+            
+            toggle() {
+                if (this.isPlaying) {
+                    this.stop();
+                    return false;
+                } else {
+                    this.start();
+                    return true;
+                }
+            }
+        }
+
+        const builderMusic = new BuilderMusic();
+        const musicToggle = document.getElementById('music-toggle');
+        let musicEnabled = false;
+        
+        musicToggle.addEventListener('click', () => {
+            musicEnabled = builderMusic.toggle();
+            musicToggle.textContent = musicEnabled ? '🔊' : '🔇';
+            musicToggle.classList.toggle('active', musicEnabled);
+        });
+    </script>
+</body>
+</html>

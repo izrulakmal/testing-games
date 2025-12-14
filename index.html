@@ -3,34 +3,1123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bug Hunter - Interactive Software Testing Game</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <title>🎮 Software Testing Games - Learn Testing Through Play</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 0.5rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Main Container */
+        .container {
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Game Cards Container */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: scaleIn 0.6s ease-out both;
+            position: relative;
+        }
+
+        .game-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .game-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+        }
+
+        .game-badge.new {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 4px 12px rgba(56, 249, 215, 0.4);
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+            opacity: 0.3;
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .game-card:hover .game-icon {
+            animation: spin 0.6s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .game-title {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .game-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .game-body {
+            padding: 2rem;
+        }
+
+        .game-description {
+            color: #4a5568;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .game-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .game-features li {
+            padding: 0.75rem 0;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .game-features li:last-child {
+            border-bottom: none;
+        }
+
+        .game-features li::before {
+            content: '✨';
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.8rem;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .play-button {
+            display: block;
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .play-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .play-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        footer a {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1100px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .login-modal.hidden {
+            display: none;
+        }
+
+        .login-content {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: scaleIn 0.5s ease;
+        }
+
+        .login-content h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .login-subtitle {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        #player-name {
+            padding: 1rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        #player-name:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-login {
+            padding: 1.25rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .login-note {
+            margin-top: 1rem;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        /* Leaderboard Styles */
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .leaderboard-game {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaderboard-game h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #2d3748;
+        }
+
+        .score-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .score-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-item.rank-1 {
+            border-left-color: #ffd700;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+        }
+
+        .score-item.rank-2 {
+            border-left-color: #c0c0c0;
+        }
+
+        .score-item.rank-3 {
+            border-left-color: #cd7f32;
+        }
+
+        .score-rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            width: 40px;
+            text-align: center;
+        }
+
+        .rank-1 .score-rank {
+            color: #ffd700;
+        }
+
+        .rank-2 .score-rank {
+            color: #c0c0c0;
+        }
+
+        .rank-3 .score-rank {
+            color: #cd7f32;
+        }
+
+        .score-player {
+            flex: 1;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .score-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .empty-scores {
+            text-align: center;
+            padding: 2rem;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .leaderboard-info {
+            text-align: center;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .leaderboard-info p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        /* Player Name Display */
+        .player-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: none;
+        }
+
+        .player-info.show {
+            display: block;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .player-info span {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .player-info .player-name {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Music Toggle Button */
+        .music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .music-toggle.active {
+            animation: musicPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media (max-width: 900px) {
+            .leaderboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .game-stats {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="header">
-            <h1>🐛 Bug Hunter - Testing Game 🐛</h1>
-            <p>Learn the importance of software testing by finding and squashing bugs!</p>
-        </div>
-        <div id="game"></div>
-        <div id="instructions">
-            <h2>How to Play:</h2>
-            <ul>
-                <li>🎯 Click on bugs to catch them before they escape!</li>
-                <li>🔍 Test different parts of the code to find hidden bugs</li>
-                <li>⚡ Fix bugs quickly for bonus points!</li>
-                <li>📈 Progress through levels to become a Testing Master!</li>
-                <li>💯 Each bug caught earns you points based on its severity</li>
-            </ul>
-            <div class="difficulty-info">
-                <h3>Bug Types:</h3>
-                <p>🐛 <strong>Minor Bug</strong> - 10 points</p>
-                <p>🐞 <strong>Major Bug</strong> - 25 points</p>
-                <p>🦗 <strong>Critical Bug</strong> - 50 points</p>
+    <!-- Animated Background Particles -->
+    <div id="particles-container"></div>
+
+    <!-- Header -->
+    <header>
+        <h1>🎮 Software Testing Games</h1>
+        <p class="subtitle">Master Testing Through Interactive Gameplay</p>
+        <p class="tagline">Learn industry-standard testing practices while having fun!</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="section-title">Choose Your Game</h2>
+
+        <div class="games-grid">
+            <!-- Bug Hunter Game -->
+            <div class="game-card">
+                <span class="game-badge">Classic</span>
+                <div class="game-header">
+                    <span class="game-icon">🐛</span>
+                    <h3 class="game-title">Bug Hunter</h3>
+                    <p class="game-subtitle">Fast-Paced Bug Catching Action</p>
+                </div>
+                <div class="game-body">
+                    <p class="game-description">
+                        Test your reflexes and testing knowledge in this exciting bug-catching game! 
+                        Click on bugs before they escape and learn about different bug severity levels.
+                    </p>
+
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">30s</span>
+                            <span class="stat-label">Per Level</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">3</span>
+                            <span class="stat-label">Bug Types</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">∞</span>
+                            <span class="stat-label">Levels</span>
+                        </div>
+                    </div>
+
+                    <ul class="game-features">
+                        <li>Real-time bug catching with Phaser.js</li>
+                        <li>Progressive difficulty levels</li>
+                        <li>Score multipliers and combos</li>
+                        <li>Learn bug severity classification</li>
+                        <li>Practice quick bug identification</li>
+                    </ul>
+
+                    <a href="http://localhost:3456" class="play-button">
+                        <span>🎯 Play Bug Hunter</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Test Plan Builder Game -->
+            <div class="game-card">
+                <span class="game-badge new">New</span>
+                <div class="game-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <span class="game-icon">🧪</span>
+                    <h3 class="game-title">Test Plan Builder</h3>
+                    <p class="game-subtitle">Strategic Testing Education</p>
+                </div>
+                <div class="game-body">
+                    <p class="game-description">
+                        Build comprehensive test plans using drag-and-drop! Run tests to discover bugs, 
+                        fix them, and learn about different testing methodologies in a strategic gameplay experience.
+                    </p>
+
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">5</span>
+                            <span class="stat-label">Levels</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">15</span>
+                            <span class="stat-label">Test Types</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">25+</span>
+                            <span class="stat-label">Total Bugs</span>
+                        </div>
+                    </div>
+
+                    <ul class="game-features">
+                        <li>Drag-and-drop test planning</li>
+                        <li>Learn security, UI, and performance testing</li>
+                        <li>Test coverage optimization</li>
+                        <li>Real-world testing scenarios</li>
+                        <li>Beautiful animations and particle effects</li>
+                    </ul>
+
+                    <a href="http://localhost:5678" class="play-button" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);">
+                        <span>🚀 Play Test Plan Builder</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    <script src="game.js"></script>
+
+    <!-- Leaderboard Section -->
+    <div class="container" style="margin-top: 0; padding-top: 0;">
+        <h2 class="section-title" style="margin-bottom: 2rem;">🏆 Today's Top Players</h2>
+        
+        <div class="leaderboard-container">
+            <div class="leaderboard-game">
+                <h3>🐛 Bug Hunter Leaders</h3>
+                <div id="bug-hunter-scores" class="score-list">
+                    <div class="empty-scores">No scores yet today. Be the first!</div>
+                </div>
+            </div>
+            
+            <div class="leaderboard-game">
+                <h3>🧪 Test Plan Builder Leaders</h3>
+                <div id="test-builder-scores" class="score-list">
+                    <div class="empty-scores">No scores yet today. Be the first!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="leaderboard-info">
+            <p>🎯 Leaderboard resets daily at midnight</p>
+            <p>🏅 Play both games to compete for top positions!</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>🎓 Educational games designed to make software testing engaging and accessible</p>
+        <p>Built with ❤️ for QA engineers, students, and testing enthusiasts</p>
+        <p><a href="README.md">Read Documentation</a> | <a href="QUICKSTART.md">Quick Start Guide</a></p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="login-modal">
+        <div class="login-content">
+            <h2>👋 Welcome Player!</h2>
+            <p class="login-subtitle">Enter your name to track your high scores</p>
+            <form id="login-form">
+                <input 
+                    type="text" 
+                    id="player-name" 
+                    placeholder="Enter your name" 
+                    maxlength="20"
+                    required
+                    autocomplete="off"
+                />
+                <button type="submit" class="btn-login">🚀 Start Playing</button>
+            </form>
+            <p class="login-note">Your scores will be saved to today's leaderboard!</p>
+        </div>
+    </div>
+
+    <!-- Player Info Display -->
+    <div id="player-info" class="player-info">
+        👤 <span class="player-name"></span>
+    </div>
+
+    <!-- Music Control Button -->
+    <button id="music-toggle" class="music-toggle" title="Toggle Music">
+        🔊
+    </button>
+
+    <script>
+        // Simple Arcade Music Generator
+        class ArcadeMusic {
+            constructor() {
+                this.audioContext = null;
+                this.isPlaying = false;
+                this.currentNote = 0;
+                this.gainNode = null;
+                this.oscillator = null;
+                
+                // Upbeat melody pattern (C major scale)
+                this.melody = [
+                    { freq: 523.25, duration: 0.2 }, // C5
+                    { freq: 587.33, duration: 0.2 }, // D5
+                    { freq: 659.25, duration: 0.2 }, // E5
+                    { freq: 783.99, duration: 0.2 }, // G5
+                    { freq: 659.25, duration: 0.2 }, // E5
+                    { freq: 587.33, duration: 0.2 }, // D5
+                    { freq: 523.25, duration: 0.4 }, // C5
+                    { freq: 392.00, duration: 0.2 }, // G4
+                    { freq: 523.25, duration: 0.2 }, // C5
+                    { freq: 587.33, duration: 0.2 }, // D5
+                    { freq: 659.25, duration: 0.4 }, // E5
+                    { freq: 587.33, duration: 0.2 }, // D5
+                    { freq: 523.25, duration: 0.6 }  // C5
+                ];
+            }
+            
+            init() {
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.gainNode = this.audioContext.createGain();
+                    this.gainNode.gain.value = 0.1;
+                    this.gainNode.connect(this.audioContext.destination);
+                }
+            }
+            
+            playNote(frequency, duration) {
+                if (!this.audioContext) return;
+                
+                const osc = this.audioContext.createOscillator();
+                const noteGain = this.audioContext.createGain();
+                
+                osc.type = 'square';
+                osc.frequency.value = frequency;
+                
+                noteGain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                
+                osc.connect(noteGain);
+                noteGain.connect(this.gainNode);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + duration);
+            }
+            
+            playLoop() {
+                if (!this.isPlaying) return;
+                
+                const note = this.melody[this.currentNote];
+                this.playNote(note.freq, note.duration);
+                
+                this.currentNote = (this.currentNote + 1) % this.melody.length;
+                
+                setTimeout(() => this.playLoop(), note.duration * 1000);
+            }
+            
+            start() {
+                this.init();
+                if (this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+                this.isPlaying = true;
+                this.playLoop();
+            }
+            
+            stop() {
+                this.isPlaying = false;
+            }
+            
+            toggle() {
+                if (this.isPlaying) {
+                    this.stop();
+                    return false;
+                } else {
+                    this.start();
+                    return true;
+                }
+            }
+        }
+
+        const music = new ArcadeMusic();
+        let musicEnabled = false;
+
+        // Music toggle button
+        const musicToggle = document.getElementById('music-toggle');
+        musicToggle.addEventListener('click', () => {
+            musicEnabled = music.toggle();
+            musicToggle.textContent = musicEnabled ? '🔊' : '🔇';
+            musicToggle.classList.toggle('active', musicEnabled);
+        });
+
+        // Score Management System
+        const ScoreManager = {
+            STORAGE_KEY: 'testingGames_scores',
+            PLAYER_KEY: 'testingGames_player',
+            
+            getTodayKey() {
+                const today = new Date().toDateString();
+                return `${this.STORAGE_KEY}_${today}`;
+            },
+            
+            getScores() {
+                const data = localStorage.getItem(this.getTodayKey());
+                return data ? JSON.parse(data) : { bugHunter: [], testBuilder: [] };
+            },
+            
+            addScore(game, playerName, score) {
+                const scores = this.getScores();
+                const gameKey = game === 'bug-hunter' ? 'bugHunter' : 'testBuilder';
+                
+                scores[gameKey].push({
+                    player: playerName,
+                    score: score,
+                    timestamp: Date.now()
+                });
+                
+                // Sort by score descending
+                scores[gameKey].sort((a, b) => b.score - a.score);
+                
+                // Keep top 10
+                scores[gameKey] = scores[gameKey].slice(0, 10);
+                
+                localStorage.setItem(this.getTodayKey(), JSON.stringify(scores));
+                this.updateLeaderboards();
+            },
+            
+            getPlayerName() {
+                return localStorage.getItem(this.PLAYER_KEY) || null;
+            },
+            
+            setPlayerName(name) {
+                localStorage.setItem(this.PLAYER_KEY, name);
+            },
+            
+            updateLeaderboards() {
+                const scores = this.getScores();
+                
+                // Update Bug Hunter leaderboard
+                const bugHunterContainer = document.getElementById('bug-hunter-scores');
+                if (scores.bugHunter.length === 0) {
+                    bugHunterContainer.innerHTML = '<div class="empty-scores">No scores yet today. Be the first!</div>';
+                } else {
+                    bugHunterContainer.innerHTML = scores.bugHunter.map((entry, index) => `
+                        <div class="score-item rank-${index + 1}">
+                            <span class="score-rank">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}</span>
+                            <span class="score-player">${entry.player}</span>
+                            <span class="score-value">${entry.score.toLocaleString()}</span>
+                        </div>
+                    `).join('');
+                }
+                
+                // Update Test Builder leaderboard
+                const testBuilderContainer = document.getElementById('test-builder-scores');
+                if (scores.testBuilder.length === 0) {
+                    testBuilderContainer.innerHTML = '<div class="empty-scores">No scores yet today. Be the first!</div>';
+                } else {
+                    testBuilderContainer.innerHTML = scores.testBuilder.map((entry, index) => `
+                        <div class="score-item rank-${index + 1}">
+                            <span class="score-rank">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}</span>
+                            <span class="score-player">${entry.player}</span>
+                            <span class="score-value">${entry.score.toLocaleString()}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+        };
+
+        // Make ScoreManager globally available
+        window.ScoreManager = ScoreManager;
+
+        // Login System
+        const loginModal = document.getElementById('login-modal');
+        const loginForm = document.getElementById('login-form');
+        const playerNameInput = document.getElementById('player-name');
+        const playerInfo = document.getElementById('player-info');
+
+        function checkLogin() {
+            const playerName = ScoreManager.getPlayerName();
+            if (playerName) {
+                loginModal.classList.add('hidden');
+                showPlayerInfo(playerName);
+            } else {
+                loginModal.classList.remove('hidden');
+            }
+        }
+
+        function showPlayerInfo(name) {
+            const playerNameSpan = playerInfo.querySelector('.player-name');
+            playerNameSpan.textContent = name;
+            playerInfo.classList.add('show');
+        }
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = playerNameInput.value.trim();
+            if (name) {
+                ScoreManager.setPlayerName(name);
+                loginModal.classList.add('hidden');
+                showPlayerInfo(name);
+            }
+        });
+
+        // Create animated background particles
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b'];
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 10 + 5;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            checkLogin();
+            ScoreManager.updateLeaderboards();
+            
+            // Add hover effects to game cards
+            document.querySelectorAll('.game-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
+            });
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

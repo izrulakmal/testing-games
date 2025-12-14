@@ -20,6 +20,18 @@ const config = {
     }
 };
 
+// Game configuration constants
+const MAX_BUGS = 8;           // Maximum bugs on screen at once
+const BASE_TIME = 30;         // Starting time in seconds
+const TIME_INCREMENT = 5;     // Additional time per level
+
+// Bug types with different colors and points
+const bugTypes = [
+    { name: 'minor', color: 0x90EE90, points: 10, speed: 100, emoji: '🐛' },
+    { name: 'major', color: 0xFFB347, points: 25, speed: 150, emoji: '🐞' },
+    { name: 'critical', color: 0xFF6B6B, points: 50, speed: 200, emoji: '🦗' }
+];
+
 // Game state
 let game;
 let score = 0;
@@ -37,18 +49,6 @@ let particles;
 let timer = BASE_TIME;
 let timerEvent;
 let gameActive = true;
-
-// Bug types with different colors and points
-const bugTypes = [
-    { name: 'minor', color: 0x90EE90, points: 10, speed: 100, emoji: '🐛' },
-    { name: 'major', color: 0xFFB347, points: 25, speed: 150, emoji: '🐞' },
-    { name: 'critical', color: 0xFF6B6B, points: 50, speed: 200, emoji: '🦗' }
-];
-
-// Game configuration constants
-const MAX_BUGS = 8;           // Maximum bugs on screen at once
-const BASE_TIME = 30;         // Starting time in seconds
-const TIME_INCREMENT = 5;     // Additional time per level
 
 // Initialize the game
 window.onload = function() {
@@ -399,8 +399,16 @@ function gameOver() {
     gameActive = false;
     timerEvent.paused = true;
     
+    // Submit score to leaderboard
+    if (window.opener && window.opener.ScoreManager) {
+        const playerName = window.opener.ScoreManager.getPlayerName();
+        if (playerName) {
+            window.opener.ScoreManager.addScore('bug-hunter', playerName, score);
+        }
+    }
+    
     // Calculate final stats
-    const finalMessage = 'Game Over!\n\nFinal Score: ' + score + '\nLevel Reached: ' + level + '\nBugs Caught: ' + bugsCaught;
+    const finalMessage = 'Game Over!\n\nFinal Score: ' + score + '\nLevel Reached: ' + level + '\nBugs Caught: ' + bugsCaught + '\n\n✨ Score saved to leaderboard!';
     
     showMessage(this, finalMessage, 5000);
     

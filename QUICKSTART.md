@@ -1,109 +1,138 @@
-# 🚀 Quick Start Guide
+# 🎮 Software Testing Games - Quick Launch Guide
 
-## Instant Play (30 seconds)
+## 🚀 Super Easy Start (One Command!)
 
-### Method 1: Direct Browser Open
+Just run this from the testing-games directory:
+
 ```bash
-# Download or clone this repo, then:
-open index.html
+./start-games.sh
 ```
-That's it! The game runs entirely in your browser.
 
----
+That's it! The script will:
+- ✅ Start all 3 servers automatically
+- ✅ Open the main page in your browser
+- ✅ Run games on separate ports
 
-## For Event Hosts
+### 🌐 Access Points
 
-### Setup Checklist
-1. ✅ Computer with modern browser (Chrome/Firefox/Edge)
-2. ✅ Internet connection (for Phaser.js CDN)
-3. ✅ Mouse or touch screen
-4. ✅ Optional: Large display for audience viewing
+Once started, access:
+- **Main Landing Page**: http://localhost:7890
+- **Bug Hunter**: http://localhost:3456  
+- **Test Plan Builder**: http://localhost:5678
 
-### 3-Minute Setup
+### 🛑 Stop All Games
+
 ```bash
-# 1. Clone repo
-git clone https://github.com/izrulakmal/testing-games.git
-cd testing-games
-
-# 2. Start local server (pick one)
-python3 -m http.server 8000
-# OR
-python -m SimpleHTTPServer 8000
-# OR
-npx http-server -p 8000
-
-# 3. Open browser
-open http://localhost:8000
-```
-
-### Fullscreen Mode
-Press `F11` in your browser for immersive gameplay!
-
----
-
-## Game Controls
-
-- **🖱️ Mouse**: Click on bugs to catch them
-- **📱 Touch**: Tap on bugs (works on tablets)
-- **⏰ Timer**: Watch the clock - catch bugs before time runs out!
-
----
-
-## Tips for First-Time Players
-
-1. 🎯 **Start with green bugs** - they're slower and easier to catch
-2. ⚡ **Move quickly** - critical (red) bugs give 50 points but move fast!
-3. 👀 **Scan all zones** - bugs appear in all four testing areas
-4. 🏆 **Time bonus matters** - finish fast to earn extra points
-5. 📈 **Practice makes perfect** - each level gets progressively harder
-
----
-
-## Troubleshooting
-
-**Game doesn't load?**
-- Check internet connection (needed for Phaser.js)
-- Try a different browser
-- Clear browser cache and reload
-
-**Bugs are too fast/slow?**
-- This is by design! Different bug types move at different speeds
-- Critical bugs (red) are fastest, minor bugs (green) are slowest
-
-**Touch not working?**
-- Ensure you're using a modern touch-enabled browser
-- Try tapping directly on the bug emoji
-
----
-
-## Event Leaderboard (Manual)
-
-Create a simple leaderboard:
-```
-┌─────────────────────────────────┐
-│     BUG HUNTER LEADERBOARD      │
-├─────────────────────────────────┤
-│ 1. Sarah    - 1,250 pts (Lvl 6) │
-│ 2. Mike     - 1,100 pts (Lvl 5) │
-│ 3. Alex     -   980 pts (Lvl 5) │
-│ 4. Jordan   -   750 pts (Lvl 4) │
-│ 5. Taylor   -   620 pts (Lvl 3) │
-└─────────────────────────────────┘
+./stop-games.sh
 ```
 
 ---
 
-## Next Steps
+## 📦 What's Running
 
-- 📖 Read [README.md](README.md) for full documentation
-- 🎮 Check [GAME_DESIGN.md](GAME_DESIGN.md) for detailed game mechanics
-- 🎨 Customize colors and difficulty in `game.js` and `styles.css`
-- 🚀 Deploy to GitHub Pages, Netlify, or Vercel for public access
+The launcher starts 3 HTTP servers:
+- Port **7890**: Main landing page with game selection
+- Port **3456**: Bug Hunter (fast-paced bug catching)
+- Port **5678**: Test Plan Builder (drag-and-drop testing)
+
+### Why These Ports?
+- **3456** - Easy to remember sequence
+- **5678** - Continuation of the sequence  
+- **7890** - Completes the pattern
+- All uncommon and unlikely to conflict!
 
 ---
 
-## Support
+## 🔧 Manual Start (If Needed)
 
-Questions? Issues? Open a GitHub issue or contact the maintainer.
+If you prefer to start manually:
 
-**Enjoy hunting bugs! 🐛🎮**
+### Main Page Only
+```bash
+python3 -m http.server 7890
+# Visit http://localhost:7890
+```
+
+### Bug Hunter Only
+```bash
+cd bug-hunter-game
+python3 -m http.server 3456
+# Visit http://localhost:3456
+```
+
+### Test Plan Builder Only
+```bash
+cd test-builder-game
+python3 -m http.server 5678
+# Visit http://localhost:5678
+```
+
+---
+
+## 📁 Project Structure
+
+```
+testing-games/
+├── start-games.sh          # 🚀 Launch all games
+├── stop-games.sh           # 🛑 Stop all games
+├── index.html              # 🏠 Main landing page
+├── bug-hunter-game/        # 🐛 Bug Hunter game
+│   ├── index.html
+│   ├── game.js
+│   └── styles.css
+└── test-builder-game/      # 🧪 Test Plan Builder
+    ├── index.html
+    ├── game.js
+    ├── styles.css
+    └── GAME_CONCEPT.md
+```
+
+---
+
+## 🎯 First Time Setup
+
+1. Make scripts executable:
+```bash
+chmod +x start-games.sh stop-games.sh
+```
+
+2. Run the launcher:
+```bash
+./start-games.sh
+```
+
+3. Your browser will automatically open to the main page!
+
+---
+
+## 💡 Tips
+
+- The launcher automatically kills old servers on those ports
+- Keep the terminal running while playing
+- Press `Ctrl+C` in terminal or run `./stop-games.sh` to stop
+- Games open in new tabs from the main page
+
+---
+
+## 🐛 Troubleshooting
+
+**Port already in use?**
+```bash
+./stop-games.sh
+./start-games.sh
+```
+
+**Scripts not executable?**
+```bash
+chmod +x *.sh
+```
+
+**Python3 not found?**
+- Install Python 3: https://www.python.org/downloads/
+- Or use: `python -m http.server` instead
+
+---
+
+## 🎉 That's It!
+
+Everything is set up for maximum ease. Just run `./start-games.sh` and play! 🎮
