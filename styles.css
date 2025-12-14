@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#game-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    max-width: 900px;
+    width: 100%;
+}
+
+#header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#header h1 {
+    font-size: 2.5em;
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+#header p {
+    font-size: 1.1em;
+    color: #666;
+}
+
+#game {
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+}
+
+#instructions {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#instructions h2 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+#instructions h3 {
+    color: #764ba2;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+#instructions ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#instructions ul li {
+    margin: 10px 0;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-info {
+    margin-top: 15px;
+}
+
+.difficulty-info p {
+    margin: 8px 0;
+    padding: 8px;
+    background: white;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-info strong {
+    color: #667eea;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #header h1 {
+        font-size: 2em;
+    }
+    
+    #game-container {
+        padding: 20px;
+    }
+    
+    #instructions ul li,
+    .difficulty-info p {
+        font-size: 0.9em;
+    }
+}
